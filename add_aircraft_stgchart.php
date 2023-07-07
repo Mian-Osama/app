@@ -27,7 +27,7 @@
     }, $aircraft_array));
 
      // Aircraft MOde Array
-     $modeArray = ['IFF mod', 'GOH', 'Periodic Insp'];
+     $modeArray = ['None','IFF mod', 'GOH', 'Periodic Insp'];
     
      // Generate the HTML for the aircraft  Mode select options
      $aircraftMode = implode('', array_map(function($mode) {
@@ -135,23 +135,29 @@
                         <?php } ?>
                     </select>
                 </div>
+                <div class="form-group row mb-3">
+                    <label for="status" >Add daily Flying Hours:(Required*)</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="status" name="status" class="form-control" pattern="^\d+(\.\d+)?$" title="Please enter a valid integer or decimal number" required>
+                    </div>
+                 </div>
                 <div class="form-group">
-                    <label for="aircraftMod">Select Aircraft Mod:</label>
+                    <label for="aircraftMod">Select Aircraft Mod: (Optional) </label>
                     <select id="aircraftMod" name="aircraftMod" class="form-control">
-                        <option value="">-- Select an aircraft Mod --</option>
+                        <option value="">-- (if you want to change mod) --</option>
                             <?php echo  $aircraftMode; ?>
                     </select>
                 </div>
                 <div class="form-group">
 
-                    <label for="details" >Details:</label>
+                    <label for="details" >Details:(Any extension hours, mention here) </label>
                     <div class="col">
                         <textarea id="details" name="details" class="form-control"></textarea>
                     </div>
                     <div class="form-group row mb-3">
-                    <label for="status" >Flying Hours:</label>
+                    <label for="extHours" >Extension Flying Hours:(Optional)</label>
                     <div class="col-sm-10">
-                        <input type="text" id="status" name="status" class="form-control" pattern="^\d+(\.\d+)?$" title="Please enter a valid integer or decimal number" required>
+                        <input type="extHours" id="extHours" name="extHours" class="form-control" pattern="^\d+(\.\d+)?$" title="Please enter a valid integer or decimal number">
                     </div>
                     </div>
                 </div>
@@ -162,15 +168,16 @@
                     if (isset($_POST['update'])) {
                         $projectName = $_POST['aircraftSelect'];
                         $aircraftMod= $_POST['aircraftMod'];
+                        $extHours= $_POST['extHours'];
                         $status = floatval($_POST['status']);
                         $details = $_POST['details'];
 
                         // Perform the update operation
                            // Check if aircraftMod is different from the default option
                         if (!empty($aircraftMod) && $aircraftMod !== "") {
-                            $updateQuery = "UPDATE stgchart SET flying_hours = flying_hours + '$status', aircraftMod='$aircraftMod', details = CONCAT(details, ',\n[', NOW(), ']  : $details') WHERE id = '$projectName'";
+                            $updateQuery = "UPDATE stgchart SET flying_hours = flying_hours + '$status', aircraftMod='$aircraftMod', details = CONCAT(details, ',\n[', NOW(), ']  : $details'), extHours ='$extHours' WHERE id = '$projectName'";
                         } else {
-                            $updateQuery = "UPDATE stgchart SET flying_hours = flying_hours + '$status', details = CONCAT(details, ',\n[', NOW(), ']  : $details') WHERE id = '$projectName'";
+                            $updateQuery = "UPDATE stgchart SET flying_hours = flying_hours + '$status', details = CONCAT(details, ',\n[', NOW(), ']  : $details'), extHours ='$extHours' WHERE id = '$projectName'";
                         }
                         if ($conn->query($updateQuery)) {
                             echo "Update successful! ";
@@ -262,6 +269,7 @@
                     <option value="<?php echo $projectName; ?>"><?php echo $projectName; ?></option>
                     <?php } ?>
                 </select>
+                <img src="legend.png" alt="Legend Image"  width="330" height="70">
             </div>
         </div>
         <img src="legend.png" alt="Legend Image"  width="200" height="50">
@@ -296,6 +304,7 @@
                         <th class="text-center">Aircraft</th>
                         <th class="text-center">Tail ID</th>
                         <th class="text-center">Flying Hours</th>
+                        <th class="text-center">Extension Flying Hours</th>
                         <th class="text-center">Aircraft Mod</th>
                         <th>Details</th>
                         <th>Max Hours</th>
@@ -322,6 +331,7 @@
                             echo '<td class="text-center">' . $row['aircraft'] . '</td>';
                             echo '<td class="text-center">' . $row['tail_id'] . '</td>';
                             echo '<td class="text-center">' . $row['flying_hours'] . '</td>';
+                            echo '<td class="text-center">' . $row['extHours'] . '</td>';
                             echo '<td class="text-center">' . $row['aircraftMod'] . '</td>';
                             echo '<td>';
                             echo '<button class="btn btn-link details-toggle" data-toggle="collapse" data-target="#details-row-' . $row['id'] . '">Hide Details</button>';
