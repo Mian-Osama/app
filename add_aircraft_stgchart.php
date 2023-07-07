@@ -558,6 +558,7 @@ function exportToExcel2() {
           const tailIds = jsonData.map(item => item.tail_id);
           const aircraft_Mod = jsonData.map(item => item.aircraftMod);
           const flyingHours = jsonData.map(item => item.flying_hours);
+          const extHours = jsonData.map(item => item.extHours);
           const maxHours = jsonData.map(item => item.max_hours);
           const details = jsonData.map(item => item.details);
           const flyingHours2 = jsonData.map(item => Math.min(item.flying_hours, item.max_hours));
@@ -634,9 +635,19 @@ function exportToExcel2() {
                         const xValue = jsonData[dataIndex].tail_id;
                         const yValue = jsonData[dataIndex].flying_hours;
                         const modValue = jsonData[dataIndex].aircraftMod;
+                        const extHoursNew = jsonData[dataIndex].extHours;
                         const maxHoursVal = jsonData[dataIndex].max_hours;
                         const remain = maxHoursVal-yValue;
-                        return `Aircraft Name: ${aircraftName};  \n Mode: ${modValue}; \n Flying Hours: ${yValue};  \n Remaining Fly Hours: ${remain} `;
+                        let totalFly;
+                        if (extHoursNew === null) {
+                        totalFly = yValue;
+                        } else if (maxHoursVal !== null) {
+                            totalFly = Number(maxHoursVal) + Number(extHoursNew);
+                        }
+
+                        // Use the totalFly variable as needed
+
+                        return `Aircraft Name: ${aircraftName};  \n Mode: ${modValue}; \n Flying Hrs: ${yValue};  \n  Extension Hrs: ${extHoursNew}; \n  Total Fly Hrs:  ${totalFly};  \n  Remaining Fly Hrs: ${remain} `;
                     }
                   }
                 }
@@ -645,7 +656,7 @@ function exportToExcel2() {
           });
 
           // Create suggestions table
-          createSuggestionsTable(tailIds,aircraft_Mod,flyingHours,maxHours,slopeLine, details);
+          createSuggestionsTable(tailIds,aircraft_Mod,extHours,flyingHours,maxHours,slopeLine, details);
         })
         .fail(function (jqxhr, textStatus, error) {
           console.log("Error retrieving data: " + error);
@@ -653,7 +664,7 @@ function exportToExcel2() {
         });
     }
 
-    function createSuggestionsTable(tailIds, aircraft_Mod, flyingHours, maxHours, slopeLine, details) {
+    function createSuggestionsTable(tailIds, aircraft_Mod,extHours, flyingHours, maxHours, slopeLine, details) {
   suggestionsTable = document.createElement('table');
   suggestionsTable.classList.add('table', 'table-bordered');
   suggestionsTable.setAttribute('id', 'list2'); // Add id attribute to the table
@@ -664,8 +675,10 @@ function exportToExcel2() {
   headerRow.insertCell().innerHTML = '<b>Tail ID</b>';
   headerRow.insertCell().innerHTML = '<b>Aircraft Mod</b>';
   headerRow.insertCell().innerHTML = '<b>Details</b>';
-  headerRow.insertCell().innerHTML = '<b>Flying Hours</b>';
-  headerRow.insertCell().innerHTML = '<b>Remaining Flying Hours</b>';
+  headerRow.insertCell().innerHTML = '<b>Extension Flying Hrs</b>';
+  headerRow.insertCell().innerHTML = '<b>Stagger Flying Hrs</b>';
+  headerRow.insertCell().innerHTML = '<b>Total Flying Hrs</b>';
+  headerRow.insertCell().innerHTML = '<b>Remaining Flying Hrs</b>';
   headerRow.insertCell().innerHTML = '<b>Current Status</b>';
   headerRow.insertCell().innerHTML = '<b>Hours (+/-)</b>';
   headerRow.insertCell().innerHTML = '<b>Future Advice</b>';
@@ -678,8 +691,18 @@ function exportToExcel2() {
     const dt = details[i];
     const aircraftMods = aircraft_Mod[i];
     const flyingHour = flyingHours[i];
+    const extHour = extHours[i];
     const maximumHour = maxHours[i];
     const remFlyingHour = maximumHour - flyingHour;
+    let totalFly;
+    if (extHour === null) {
+    totalFly = flyingHour;
+    } else if (extHour !== null) {
+    totalFly = Number(maximumHour) + Number(extHour) ;
+    }
+
+    // Use the totalFly variable as needed
+
     const suggestion =
       flyingHour - slopeLine[i] > 0
         ? 'Over Flying: '
@@ -700,7 +723,9 @@ function exportToExcel2() {
       tailId: tailId,
       detail:dt,
       aircraftMods: aircraftMods,
+      extHour: extHour,
       flyingHour: flyingHour,
+      totalFly: totalFly,
       remFlyingHour: remFlyingHour,
       suggestion: suggestion,
       diff: diff,
@@ -721,7 +746,9 @@ function exportToExcel2() {
     newRow.insertCell().textContent = rowData.tailId;
     newRow.insertCell().textContent = rowData.aircraftMods;
     newRow.insertCell().textContent = rowData.detail;
+    newRow.insertCell().textContent = rowData.extHour;
     newRow.insertCell().textContent = rowData.flyingHour;
+    newRow.insertCell().textContent = rowData.totalFly;
     newRow.insertCell().textContent = rowData.remFlyingHour.toFixed(2);
 
     const suggestionCell = newRow.insertCell();

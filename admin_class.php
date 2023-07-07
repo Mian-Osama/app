@@ -538,6 +538,7 @@ Class Action {
 		$aircraft = $_POST['aircraft'];
 		$tail_id = $_POST['tail_id'];
 		$flying_hours = $_POST['flying_hours'];
+		$extHours = $_POST['extHours'];
 		$aircraftMod= $_POST['aircraftMod'];
 		$details = $_POST['details'];
 		$max_hours = $_POST['max_hours'];
@@ -552,7 +553,7 @@ Class Action {
 			return 0;
 		} else {
 			if ($_POST['req'] == 'stgchart') {
-				$sql_insert = "INSERT INTO stgchart (aircraft, tail_id, flying_hours, aircraftMod, details, max_hours, airbase) VALUES ('$aircraft', '$tail_id', '$flying_hours','$aircraftMod', '$details', '$max_hours\n','$airbase')";
+				$sql_insert = "INSERT INTO stgchart (aircraft, tail_id, flying_hours, extHours, aircraftMod, details, max_hours, airbase) VALUES ('$aircraft', '$tail_id', '$flying_hours','$extHours','$aircraftMod', '$details', '$max_hours\n','$airbase')";
 				$result_check = $this->db->query($sql_insert);
 				if(!$result_check) {
 					echo "Error: " . mysqli_error($this->db);

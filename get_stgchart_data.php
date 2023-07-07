@@ -42,6 +42,7 @@ while ($row = $result->fetch_assoc()) {
         "aircraft" => $row["aircraft"],
         "tail_id" => $row["tail_id"],
         "aircraftMod" => $row["aircraftMod"],
+        "extHours" => $row["extHours"],
         "flying_hours" => $flying_hours,
         "details" => $row["details"],
         "max_hours" => $max_hours,
