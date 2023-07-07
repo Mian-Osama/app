@@ -162,15 +162,15 @@
                     if (isset($_POST['update'])) {
                         $projectName = $_POST['aircraftSelect'];
                         $aircraftMod= $_POST['aircraftMod'];
-                        $status = $_POST['status'];
+                        $status = floatval($_POST['status']);
                         $details = $_POST['details'];
 
                         // Perform the update operation
                            // Check if aircraftMod is different from the default option
                         if (!empty($aircraftMod) && $aircraftMod !== "") {
-                            $updateQuery = "UPDATE stgchart SET flying_hours = '$status', aircraftMod='$aircraftMod', details = CONCAT(details, ',\n[', NOW(), ']  : $details') WHERE id = '$projectName'";
+                            $updateQuery = "UPDATE stgchart SET flying_hours = flying_hours + '$status', aircraftMod='$aircraftMod', details = CONCAT(details, ',\n[', NOW(), ']  : $details') WHERE id = '$projectName'";
                         } else {
-                            $updateQuery = "UPDATE stgchart SET flying_hours = '$status', details = CONCAT(details, ',\n[', NOW(), ']  : $details') WHERE id = '$projectName'";
+                            $updateQuery = "UPDATE stgchart SET flying_hours = flying_hours + '$status', details = CONCAT(details, ',\n[', NOW(), ']  : $details') WHERE id = '$projectName'";
                         }
                         if ($conn->query($updateQuery)) {
                             echo "Update successful! ";
