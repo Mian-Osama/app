@@ -567,8 +567,19 @@ function exportToExcel2() {
                 label: 'Flying Hours',
                 data: flyingHours2,
                 borderColor: 'blue',
-                backgroundColor: 'rgba(0, 0, 255, 0.2)',
-                pointBackgroundColor: 'blue',
+                backgroundColor:  'blue',
+                pointBackgroundColor:
+                aircraft_Mod.map(aircraft_Mod => {
+                    if (aircraft_Mod === 'GOH') {
+                        return 'red';
+                    } else if (aircraft_Mod === 'IFF mod') {
+                        return 'yellow';
+                    } else if (aircraft_Mod === 'Periodic Insp') {
+                        return 'black';
+                    } else {
+                        return 'rgba(0, 0, 255, 0.2)'; // Default point style
+                    }
+                    }),
                 pointRadius: 10,
                 pointHoverRadius: 20,
                 fill: false,
@@ -610,7 +621,8 @@ function exportToExcel2() {
                         const aircraftName = jsonData[dataIndex].aircraft;
                         const xValue = jsonData[dataIndex].tail_id;
                         const yValue = jsonData[dataIndex].flying_hours;
-                        return `Aircraft Name: ${aircraftName}\n Tail ID: ${xValue}\n Flying Hours: ${yValue}`;
+                        const modValue = jsonData[dataIndex].aircraftMod;
+                        return `Aircraft Name: ${aircraftName}\n Mode: ${modValue} ID: ${xValue}\n Flying Hours: ${yValue}`;
                     }
                   }
                 }
