@@ -564,9 +564,20 @@ function exportToExcel2() {
                 borderColor: 'blue',
                 backgroundColor: 'rgba(0, 0, 255, 0.2)',
                 pointBackgroundColor: 'blue',
-                pointRadius: 4,
-                pointHoverRadius: 6,
-                fill: false
+                pointRadius: 10,
+                pointHoverRadius: 20,
+                fill: false,
+                pointStyle: aircraft_Mod.map(aircraft_Mod => {
+                    if (aircraft_Mod === 'GOH') {
+                        return 'rectRot';
+                    } else if (aircraft_Mod === 'IFF') {
+                        return 'triangle';
+                    } else if (aircraft_Mod === 'Inspection') {
+                        return 'hexagon';
+                    } else {
+                        return 'circle'; // Default point style
+                    }
+                    })
               }, {
                 label: 'Slope Line',
                 data: slopeLine,
@@ -674,7 +685,7 @@ function exportToExcel2() {
         <div class="card-header" style="font-weight: bold; font-size: 20px;">
             <div class="d-flex justify-content-between align-items-center">
             Flying Analysis
-        
+            <button class="btn btn-flat btn-primary" onclick="exportToExcel()"><i class="fa fa-file-excel"></i>Export to Excel</button>
         <button class="btn btn-flat btn-primary" onclick="printanalysis()"><i class="fa fa-print"></i>Print</button>
         <button class="btn btn-flat btn-primary" onclick="showOverFlying()">Show Over Flying</button>
         <button class="btn btn-flat btn-primary" onclick="showUnderFlying()">Show Under Flying</button>
@@ -713,6 +724,26 @@ function exportToExcel2() {
       }
     }
   }
+
+  function exportToExcel() {
+    var table = document.getElementById('list2');
+    var csvString = '';
+    for (var i = 0; i < table.rows.length; i++) {
+      var rowData = table.rows[i].cells;
+      for (var j = 0; j < rowData.length; j++) {
+        csvString += rowData[j].innerText + ",";
+      }
+      csvString = csvString.substring(0, csvString.length - 1);
+      csvString += '\n';
+    }
+    var filename = 'table_data.csv';
+    var link = document.createElement('a');
+    link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvString);
+    link.target = '_blank';
+    link.download = filename;
+    link.click();
+  }
+  
   function printanalysis() {
   var printContent = document.getElementById('analys').cloneNode(true);
   var printWindow = window.open('', '', 'width=800, height=600');
@@ -727,7 +758,7 @@ function exportToExcel2() {
     var suggestionsTable = document.getElementById('list2');
     var rows = suggestionsTable.getElementsByTagName('tr');
     for (var i = 1; i < rows.length; i++) {
-      var suggestionCell = rows[i].getElementsByTagName('td')[2];
+      var suggestionCell = rows[i].getElementsByTagName('td')[5];
       if (suggestionCell.textContent.startsWith('Over Flying: ')) {
         rows[i].style.display = '';
       } else {
@@ -740,7 +771,7 @@ function exportToExcel2() {
     var suggestionsTable = document.getElementById('list2');
     var rows = suggestionsTable.getElementsByTagName('tr');
     for (var i = 1; i < rows.length; i++) {
-      var suggestionCell = rows[i].getElementsByTagName('td')[2];
+      var suggestionCell = rows[i].getElementsByTagName('td')[5];
       if (suggestionCell.textContent.startsWith('Under Flying: ')) {
         rows[i].style.display = '';
       } else {
