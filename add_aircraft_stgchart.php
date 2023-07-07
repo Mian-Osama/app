@@ -279,6 +279,7 @@
             <div class="d-flex justify-content-between align-items-center">
             Stagger Aircraft List
             <button class="btn btn-flat btn-primary" onclick="printCard()"><i class="fa fa-print"></i>Print</button>
+            <button class="btn btn-flat btn-primary" onclick="exportToExcel2()"><i class="fa fa-file-excel"></i>Export to Excel</button>
         </div></div>
         <div class="card-body">
             <input type="text" id="search-input" class="form-control mb-3" placeholder="Search">
@@ -457,6 +458,30 @@ var maxHoursArray = <?php echo json_encode($max_hours_array); ?>;
         });
     });
 
+function exportToExcel2() {
+  var table = document.getElementById('list');
+  var csvString = '';
+  for (var i = 0; i < table.rows.length; i++) {
+    var rowData = table.rows[i].cells;
+    for (var j = 0; j < rowData.length; j++) {
+      var cellData = rowData[j].innerText;
+      if (rowData[j].querySelector('.collapse')) { // Check if cell contains a collapsed element
+        var collapseData = rowData[j].querySelector('.collapse').innerText;
+        csvString += collapseData.replace(/,/g, '') + ",";
+      } else {
+        csvString += cellData.replace(/,/g, '') + ",";
+      }
+    }
+    csvString = csvString.substring(0, csvString.length - 1);
+    csvString += '\n';
+  }
+  var filename = 'table_data.csv';
+  var link = document.createElement('a');
+  link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvString);
+  link.target = '_blank';
+  link.download = filename;
+  link.click();
+}
 
     // New database Entities register here
     $('#addAircraft').submit(function(e){
