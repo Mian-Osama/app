@@ -32,6 +32,14 @@ include 'db_connect.php';
     if(isset($_REQUEST['status'])){
         $where = "WHERE project_name = '{$_REQUEST['project_name']}' ";
         $qry = "UPDATE project_tasks SET status = '{$_REQUEST['status']}', details = CONCAT(details, '" . $_REQUEST['details'] . "')" . $where;
+
+        if ($_REQUEST['status'] == 100) {
+            // Set flydate to current date and update the database row
+            $flydate = date('Y-m-d'); // Current date
+            $updateQry = "UPDATE project_tasks SET flydate = '{$flydate}' WHERE project_name = '{$_REQUEST['project_name']}'";
+            $conn->query($updateQry);
+        }
+
         // fetch data from database
         $qry = $conn->query($qry);
         exit;
