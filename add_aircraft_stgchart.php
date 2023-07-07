@@ -136,20 +136,20 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="aircraftMod">Select Aircraft Mod:</label>
+                    <label for="aircraftMod">Select Aircraft Mod: (Optional) </label>
                     <select id="aircraftMod" name="aircraftMod" class="form-control">
-                        <option value="">-- Select an aircraft Mod --</option>
+                        <option value="">-- (if you want to change mod) --</option>
                             <?php echo  $aircraftMode; ?>
                     </select>
                 </div>
                 <div class="form-group">
 
-                    <label for="details" >Details:</label>
+                    <label for="details" >Details:(Any extension hours, mention here) </label>
                     <div class="col">
                         <textarea id="details" name="details" class="form-control"></textarea>
                     </div>
                     <div class="form-group row mb-3">
-                    <label for="status" >Flying Hours:</label>
+                    <label for="status" >Add daily Flying Hours:(Required*)</label>
                     <div class="col-sm-10">
                         <input type="text" id="status" name="status" class="form-control" pattern="^\d+(\.\d+)?$" title="Please enter a valid integer or decimal number" required>
                     </div>
@@ -262,7 +262,7 @@
                     <option value="<?php echo $projectName; ?>"><?php echo $projectName; ?></option>
                     <?php } ?>
                 </select>
-                <img src="legend.png" alt="Legend Image"  width="200" height="50">
+                <img src="legend.png" alt="Legend Image"  width="330" height="70">
             </div>
         </div>
     </form>
