@@ -549,6 +549,7 @@ function exportToExcel2() {
           const aircraft_Mod = jsonData.map(item => item.aircraftMod);
           const flyingHours = jsonData.map(item => item.flying_hours);
           const maxHours = jsonData.map(item => item.max_hours);
+          const details = jsonData.map(item => item.details);
           const flyingHours2 = jsonData.map(item => Math.min(item.flying_hours, item.max_hours));
           // Calculate the slope line values
           const slopeLine = [];
@@ -631,7 +632,7 @@ function exportToExcel2() {
           });
 
           // Create suggestions table
-          createSuggestionsTable(tailIds,aircraft_Mod,flyingHours,maxHours,slopeLine);
+          createSuggestionsTable(tailIds,aircraft_Mod,flyingHours,maxHours,slopeLine, details);
         })
         .fail(function (jqxhr, textStatus, error) {
           console.log("Error retrieving data: " + error);
@@ -639,7 +640,7 @@ function exportToExcel2() {
         });
     }
 
-    function createSuggestionsTable(tailIds, aircraft_Mod, flyingHours, maxHours, slopeLine) {
+    function createSuggestionsTable(tailIds, aircraft_Mod, flyingHours, maxHours, slopeLine, details) {
   suggestionsTable = document.createElement('table');
   suggestionsTable.classList.add('table', 'table-bordered');
   suggestionsTable.setAttribute('id', 'list2'); // Add id attribute to the table
@@ -649,6 +650,7 @@ function exportToExcel2() {
   headerRow.insertCell().innerHTML = '<b>No#</b>';
   headerRow.insertCell().innerHTML = '<b>Tail ID</b>';
   headerRow.insertCell().innerHTML = '<b>Aircraft Mod</b>';
+  headerRow.insertCell().innerHTML = '<b>Details</b>';
   headerRow.insertCell().innerHTML = '<b>Flying Hours</b>';
   headerRow.insertCell().innerHTML = '<b>Remaining Flying Hours</b>';
   headerRow.insertCell().innerHTML = '<b>Current Status</b>';
@@ -660,6 +662,7 @@ function exportToExcel2() {
   for (let i = 0; i < tailIds.length; i++) {
     const serial = i + 1;
     const tailId = tailIds[i];
+    const dt = details[i];
     const aircraftMods = aircraft_Mod[i];
     const flyingHour = flyingHours[i];
     const maximumHour = maxHours[i];
@@ -682,6 +685,7 @@ function exportToExcel2() {
     const rowData = {
       serial: serial,
       tailId: tailId,
+      detail:dt,
       aircraftMods: aircraftMods,
       flyingHour: flyingHour,
       remFlyingHour: remFlyingHour,
@@ -703,6 +707,7 @@ function exportToExcel2() {
     newRow.insertCell().textContent = rowData.serial;
     newRow.insertCell().textContent = rowData.tailId;
     newRow.insertCell().textContent = rowData.aircraftMods;
+    newRow.insertCell().textContent = rowData.detail;
     newRow.insertCell().textContent = rowData.flyingHour;
     newRow.insertCell().textContent = rowData.remFlyingHour.toFixed(2);
 
