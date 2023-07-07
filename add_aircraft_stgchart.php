@@ -269,10 +269,9 @@
                     <option value="<?php echo $projectName; ?>"><?php echo $projectName; ?></option>
                     <?php } ?>
                 </select>
-                <img src="legend.png" alt="Legend Image"  width="330" height="70">
             </div>
         </div>
-        <img src="legend.png" alt="Legend Image"  width="200" height="50">
+        <img src="legend.png" alt="Legend Image"  width="330" height="70">
     </form>
     <style>
         canvas {
