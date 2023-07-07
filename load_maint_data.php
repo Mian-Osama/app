@@ -19,7 +19,7 @@ include 'db_connect.php';
     }
 
     if(isset($_REQUEST['project_name']) && isset($_REQUEST['phase_name'])){
-        $where = "WHERE project_name = '{$_REQUEST['project_name']}' AND phase_name = '{$_REQUEST['phase_name']}'";
+        $where = "WHERE project_name = '{$_REQUEST['project_name']}' AND phase_name = '{$_REQUEST['phase_name']}' AND duration != completed_duration";
         $qry ="SELECT DISTINCT task_name FROM project_tasks ".$where;
        
     }
@@ -54,7 +54,7 @@ include 'db_connect.php';
         if ($totalDuration == $totalCompletedDuration) {
             // Set flydate to current date and update the database row
             $flydate = date('Y-m-d'); // Current date
-            $updateQry = "UPDATE project_tasks SET flydate = '{$flydate}' " . $where;
+            $updateQry = "UPDATE project_tasks SET flydate = '{$flydate}' WHERE project_name = '{$_REQUEST['project_name']}'";
             $conn->query($updateQry);
         }
     

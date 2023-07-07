@@ -137,7 +137,7 @@
                 </div>
                 <div class="form-group">
                     <label for="aircraftMod">Select Aircraft Mod:</label>
-                    <select id="aircraftMod" name="aircraftMod" class="form-control" required>
+                    <select id="aircraftMod" name="aircraftMod" class="form-control">
                         <option value="">-- Select an aircraft Mod --</option>
                             <?php echo  $aircraftMode; ?>
                     </select>
@@ -166,7 +166,12 @@
                         $details = $_POST['details'];
 
                         // Perform the update operation
-                        $updateQuery = "UPDATE stgchart SET flying_hours = '$status', aircraftMod='$aircraftMod',  details = CONCAT(details, ',\n[', NOW(), ']  : $details') WHERE id = '$projectName'";
+                           // Check if aircraftMod is different from the default option
+                        if (!empty($aircraftMod) && $aircraftMod !== "") {
+                            $updateQuery = "UPDATE stgchart SET flying_hours = '$status', aircraftMod='$aircraftMod', details = CONCAT(details, ',\n[', NOW(), ']  : $details') WHERE id = '$projectName'";
+                        } else {
+                            $updateQuery = "UPDATE stgchart SET flying_hours = '$status', details = CONCAT(details, ',\n[', NOW(), ']  : $details') WHERE id = '$projectName'";
+                        }
                         if ($conn->query($updateQuery)) {
                             echo "Update successful! ";
                         } else {
@@ -596,6 +601,7 @@ function exportToExcel2() {
                   }
                 }
               },
+              
               plugins: {
                 tooltip: {
                   callbacks: {
@@ -621,7 +627,7 @@ function exportToExcel2() {
         });
     }
 
-    function createSuggestionsTable(tailIds,aircraft_Mod,flyingHours,maxHours,slopeLine) {
+    function createSuggestionsTable(tailIds, aircraft_Mod, flyingHours, maxHours, slopeLine) {
   suggestionsTable = document.createElement('table');
   suggestionsTable.classList.add('table', 'table-bordered');
   suggestionsTable.setAttribute('id', 'list2'); // Add id attribute to the table
@@ -633,46 +639,85 @@ function exportToExcel2() {
   headerRow.insertCell().innerHTML = '<b>Aircraft Mod</b>';
   headerRow.insertCell().innerHTML = '<b>Flying Hours</b>';
   headerRow.insertCell().innerHTML = '<b>Remaining Flying Hours</b>';
-  headerRow.insertCell().innerHTML = '<b>Suggested Value (+/-)</b>';
+  headerRow.insertCell().innerHTML = '<b>Current Status</b>';
+  headerRow.insertCell().innerHTML = '<b>Hours (+/-)</b>';
   headerRow.insertCell().innerHTML = '<b>Future Advice</b>';
 
+  var dataRows = []; // Array to store table data
+
   for (let i = 0; i < tailIds.length; i++) {
-    const serial = i+1;
+    const serial = i + 1;
     const tailId = tailIds[i];
     const aircraftMods = aircraft_Mod[i];
     const flyingHour = flyingHours[i];
-    const maximumHour =maxHours[i];
-    const remFlyingHour = maximumHour -flyingHour;
-    const suggestion = flyingHour - slopeLine[i] > 0 ? 'Over Flying: ' : (flyingHour - slopeLine[i] < 0 ? 'Under Flying: ' : '');
-    const decision = flyingHour - slopeLine[i] > 0 ? 'Fly less' : (flyingHour - slopeLine[i] < 0 ? 'Can Fly More' : '');
+    const maximumHour = maxHours[i];
+    const remFlyingHour = maximumHour - flyingHour;
+    const suggestion =
+      flyingHour - slopeLine[i] > 0
+        ? 'Over Flying: '
+        : flyingHour - slopeLine[i] < 0
+        ? 'Under Flying: '
+        : '';
+    const decision =
+      flyingHour - slopeLine[i] > 0
+        ? 'Fly less'
+        : flyingHour - slopeLine[i] < 0
+        ? 'Can Fly More'
+        : '';
     const diff = Math.abs(flyingHour - slopeLine[i]).toFixed(2); // Limit decimal to 2 points
 
+    // Create a data row object
+    const rowData = {
+      serial: serial,
+      tailId: tailId,
+      aircraftMods: aircraftMods,
+      flyingHour: flyingHour,
+      remFlyingHour: remFlyingHour,
+      suggestion: suggestion,
+      diff: diff,
+      decision: decision
+    };
+
+    dataRows.push(rowData); // Add the data row to the array
+  }
+
+  // Sort the dataRows array by the 'diff' property in descending order
+  dataRows.sort((a, b) => b.diff - a.diff);
+
+  for (let i = 0; i < dataRows.length; i++) {
+    const rowData = dataRows[i];
+
     const newRow = suggestionsTable.insertRow();
-    newRow.insertCell().textContent = serial;
-    newRow.insertCell().textContent = tailId;
-    newRow.insertCell().textContent = aircraftMods;
-    newRow.insertCell().textContent = flyingHour;
-    newRow.insertCell().textContent = remFlyingHour;
-    
+    newRow.insertCell().textContent = rowData.serial;
+    newRow.insertCell().textContent = rowData.tailId;
+    newRow.insertCell().textContent = rowData.aircraftMods;
+    newRow.insertCell().textContent = rowData.flyingHour;
+    newRow.insertCell().textContent = rowData.remFlyingHour.toFixed(2);
+
     const suggestionCell = newRow.insertCell();
-    suggestionCell.innerHTML = suggestion + diff + ' Hours';
+    suggestionCell.innerHTML = rowData.suggestion;
+    const hourCell = newRow.insertCell();
+    hourCell.innerHTML = rowData.diff;
     const decisionCell = newRow.insertCell();
-    decisionCell.innerHTML = decision;
-    
-    if (suggestion === 'Over Flying: ') {
+    decisionCell.innerHTML = rowData.decision;
+
+    if (rowData.suggestion === 'Over Flying: ') {
       suggestionCell.style.fontWeight = 'bold';
+      hourCell.style.fontWeight = 'bold';
       decisionCell.style.fontWeight = 'bold';
       suggestionCell.style.color = 'red';
       decisionCell.style.color = 'red';
-    } else if (suggestion === 'Under Flying: ') {
+      hourCell.style.color = 'red';
+    } else if (rowData.suggestion === 'Under Flying: ') {
       suggestionCell.style.fontWeight = 'bold';
       suggestionCell.style.color = 'blue';
       decisionCell.style.fontWeight = 'bold';
       decisionCell.style.color = 'blue';
-    }
-    else{
-        suggestionCell.style.fontWeight = 'bold';
-      suggestionCell.style.color = 'green'; 
+      hourCell.style.color = 'blue';
+      hourCell.style.fontWeight = 'bold';
+    } else {
+      suggestionCell.style.fontWeight = 'bold';
+      suggestionCell.style.color = 'green';
       decisionCell.style.color = 'green';
     }
   }
@@ -686,13 +731,14 @@ function exportToExcel2() {
             <div class="d-flex justify-content-between align-items-center">
             Flying Analysis
             <button class="btn btn-flat btn-primary" onclick="exportToExcel()"><i class="fa fa-file-excel"></i>Export to Excel</button>
-        <button class="btn btn-flat btn-primary" onclick="printanalysis()"><i class="fa fa-print"></i>Print</button>
-        <button class="btn btn-flat btn-primary" onclick="showOverFlying()">Show Over Flying</button>
-        <button class="btn btn-flat btn-primary" onclick="showUnderFlying()">Show Under Flying</button>
-        <div class="form-group">
-          <input type="text" class="form-control" id="searchInput" placeholder="Search" oninput="searchTable()">
+            <button class="btn btn-flat btn-primary" onclick="printanalysis()"><i class="fa fa-print"></i>Print</button>
+            <button class="btn btn-flat btn-primary" onclick="showOverFlying()">Show Over Flying</button>
+            <button class="btn btn-flat btn-primary" onclick="showUnderFlying()">Show Under Flying</button>
+            <div class="form-group">
+              <input type="text" class="form-control" id="searchInput" placeholder="Search" oninput="searchTable()">
+            </div>
+          </div>
         </div>
-        </div></div>
       </div>
       <div class="card-body" id="analys">
         <table class="table table-hover table-condensed" id="list">
@@ -701,7 +747,8 @@ function exportToExcel2() {
       </div>
     </div>
   `;
-    }
+}
+
   function showTablePlaceholder(message) {
     tableContainer.innerHTML = '<p>' + message + '</p>';
   }

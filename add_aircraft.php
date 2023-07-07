@@ -145,7 +145,7 @@
         $duration = $end->diff($start)->format('%a');
         $status = 0;
         // calculate percentage of duration and completed duration
-        $result = $conn->query("SELECT status, inspectionType, SUM(duration) as total_duration, SUM(completed_duration) AS total_completed_duration FROM project_tasks WHERE project_name = '$project_name'");
+        $result = $conn->query("SELECT status, inspectionType, SUM(duration) as total_duration, SUM(completed_duration) AS total_completed_duration, flydate FROM project_tasks WHERE project_name = '$project_name'");
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             $total_duration = $row['total_duration'];
@@ -170,9 +170,8 @@
             } 
         }
         // flying date entering;
-        if(($status == 100) && (empty($flyingdate))){
-            $flyingdate = date('Y-m-d H:i:s');
-          
+        if(($status == 100)){
+            $flyingdate = $row['flydate'];
             $flyingtime = time();
             $task_end_date = strtotime($last_end_date);
             $delays1 = $flyingtime - $task_end_date;
@@ -196,7 +195,7 @@
             'flydate' => $flyingdate,
             'delays' => $delays,
             'inspectionType' => $inspectionType,
-            'details' => $details
+            'details' => $details,
         );
     }
 
