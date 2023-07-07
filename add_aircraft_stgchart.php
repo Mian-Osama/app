@@ -564,10 +564,11 @@ var maxHoursArray = <?php echo json_encode($max_hours_array); ?>;
                 tooltip: {
                   callbacks: {
                     label: function (context) {
-                      const dataIndex = context.dataIndex;
-                      const yValue = context.raw.y;
-                      const diff = yValue - slopeLine[dataIndex];
-                      return `Difference: ${diff}`;
+                        const dataIndex = context.dataIndex;
+                        const aircraftName = jsonData[dataIndex].aircraft;
+                        const xValue = jsonData[dataIndex].tail_id;
+                        const yValue = jsonData[dataIndex].flying_hours;
+                        return `Aircraft Name: ${aircraftName}\n Tail ID: ${xValue}\n Flying Hours: ${yValue}`;
                     }
                   }
                 }
@@ -587,6 +588,7 @@ var maxHoursArray = <?php echo json_encode($max_hours_array); ?>;
     function createSuggestionsTable(tailIds,aircraft_Mod,flyingHours,maxHours,slopeLine) {
   suggestionsTable = document.createElement('table');
   suggestionsTable.classList.add('table', 'table-bordered');
+  suggestionsTable.setAttribute('id', 'list2'); // Add id attribute to the table
 
   var tableHeader = suggestionsTable.createTHead();
   var headerRow = tableHeader.insertRow();
@@ -639,53 +641,90 @@ var maxHoursArray = <?php echo json_encode($max_hours_array); ?>;
     }
   }
 
+  var tableContainer = document.getElementById('tableContainer'); // Assuming you have a container with id "tableContainer"
+
   tableContainer.innerHTML = `
-  <div class="card card-outline card-success" id="analys">
+    <div class="card card-outline card-success" >
       <div class="card-header" style="font-weight: bold; font-size: 20px;">
-      <h5 class="card-title"><strong><b>Flying Analysis</b></strong></h5>
-    <style>
-    .container {
-        display: flex;
-        justify-content: flex-end;
-    }
-    </style>
-    <div class="container">
-    <input type="text" id="search" class="form-control mb-3" placeholder="Search">
-    <button class="btn btn-flat btn-primary" onclick="printanalysis()">
-        <i class="fa fa-print"></i> Print
-    </button>
-    </div>
+        <div class="card-header" style="font-weight: bold; font-size: 20px;">
+            <div class="d-flex justify-content-between align-items-center">
+            Flying Analysis
+        
+        <button class="btn btn-flat btn-primary" onclick="printanalysis()"><i class="fa fa-print"></i>Print</button>
+        <button class="btn btn-flat btn-primary" onclick="showOverFlying()">Show Over Flying</button>
+        <button class="btn btn-flat btn-primary" onclick="showUnderFlying()">Show Under Flying</button>
+        <div class="form-group">
+          <input type="text" class="form-control" id="searchInput" placeholder="Search" oninput="searchTable()">
+        </div>
+        </div></div>
       </div>
-      <div class="card-body">
+      <div class="card-body" id="analys">
         <table class="table table-hover table-condensed" id="list">
           ${suggestionsTable.outerHTML}
         </table>
       </div>
     </div>
   `;
-}
-
-
-    function showTablePlaceholder(message) {
-      tableContainer.innerHTML = '<p>' + message + '</p>';
     }
-    function printanalysis() {
-        var printContent = document.getElementById('analys');
+  function showTablePlaceholder(message) {
+    tableContainer.innerHTML = '<p>' + message + '</p>';
+  }
+  function searchTable() {
+    var input = document.getElementById('searchInput');
+    var suggestionsTable = document.getElementById('list2');
+    var filter = input.value.toLowerCase();
+    var rows = suggestionsTable.getElementsByTagName('tr');
+
+    for (var i = 1; i < rows.length; i++) {
+      var cells = rows[i].getElementsByTagName('td');
+      var rowText = '';
+      for (var j = 0; j < cells.length; j++) {
+        rowText += cells[j].textContent.toLowerCase() + ' ';
+      }
+      if (rowText.includes(filter)) {
+        rows[i].style.display = '';
+      } else {
+        rows[i].style.display = 'none';
+      }
+    }
+  }
+  function printanalysis() {
+  var printContent = document.getElementById('analys').cloneNode(true);
   var printWindow = window.open('', '', 'width=800, height=600');
-  printWindow.document.write('<html><head><title>Chart Print</title></head><body>' + printContent.innerHTML + '</body></html>');
+  printWindow.document.write('<html><head><title>Chart Print</title>');
+  printWindow.document.write('<style>table { border-collapse: collapse; } td, th { border: 1px solid black; padding: 5px; }</style>');
+  printWindow.document.write('</head><body>' + printContent.innerHTML + '</body></html>');
   printWindow.document.close();
   printWindow.print();
-  
 }
 
-var $rows = $('#suggestionsTable');
-$('#search').keyup(function() {
-    var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+  function showOverFlying() {
+    var suggestionsTable = document.getElementById('list2');
+    var rows = suggestionsTable.getElementsByTagName('tr');
+    for (var i = 1; i < rows.length; i++) {
+      var suggestionCell = rows[i].getElementsByTagName('td')[2];
+      if (suggestionCell.textContent.startsWith('Over Flying: ')) {
+        rows[i].style.display = '';
+      } else {
+        rows[i].style.display = 'none';
+      }
+    }
+  }
 
-    $rows.show().filter(function() {
-        var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
-        return !~text.indexOf(val);
-    }).hide();
-});
+  function showUnderFlying() {
+    var suggestionsTable = document.getElementById('list2');
+    var rows = suggestionsTable.getElementsByTagName('tr');
+    for (var i = 1; i < rows.length; i++) {
+      var suggestionCell = rows[i].getElementsByTagName('td')[2];
+      if (suggestionCell.textContent.startsWith('Under Flying: ')) {
+        rows[i].style.display = '';
+      } else {
+        rows[i].style.display = 'none';
+      }
+    }
+  }
+
+
+
 </script>
 
