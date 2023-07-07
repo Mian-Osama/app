@@ -634,7 +634,9 @@ function exportToExcel2() {
                         const xValue = jsonData[dataIndex].tail_id;
                         const yValue = jsonData[dataIndex].flying_hours;
                         const modValue = jsonData[dataIndex].aircraftMod;
-                        return `Aircraft Name: ${aircraftName}\n Mode: ${modValue} ID: ${xValue}\n Flying Hours: ${yValue}`;
+                        const maxHoursVal = jsonData[dataIndex].max_hours;
+                        const remain = maxHoursVal-yValue;
+                        return `Aircraft Name: ${aircraftName};  \n Mode: ${modValue}; \n Flying Hours: ${yValue};  \n Remaining Fly Hours: ${remain} `;
                     }
                   }
                 }
