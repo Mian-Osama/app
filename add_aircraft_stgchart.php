@@ -570,10 +570,10 @@ function exportToExcel2() {
                 pointStyle: aircraft_Mod.map(aircraft_Mod => {
                     if (aircraft_Mod === 'GOH') {
                         return 'rectRot';
-                    } else if (aircraft_Mod === 'IFF') {
+                    } else if (aircraft_Mod === 'IFF mod') {
                         return 'triangle';
-                    } else if (aircraft_Mod === 'Inspection') {
-                        return 'hexagon';
+                    } else if (aircraft_Mod === 'Periodic Insp') {
+                        return 'rect';
                     } else {
                         return 'circle'; // Default point style
                     }
