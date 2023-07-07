@@ -3,9 +3,9 @@
 include 'db_connect.php';
 
 // Get the tasks data from your database
-$sql = "SELECT * FROM stgchart WHERE aircraft='" . $_REQUEST['aircraft'] . "' AND airbase='" . $_REQUEST['airbase'] . "' ORDER BY id asc";
+$sql = "SELECT * FROM stgchart WHERE aircraft='" . $_REQUEST['aircraft'] . "' AND airbase='" . $_REQUEST['airbase'] . "' ORDER BY flying_hours asc";
 if (isset($_REQUEST['tail_id'])) {
-    $sql = "SELECT * FROM stgchart WHERE aircraft='" . $_REQUEST['aircraft'] . "' AND tail_id='" . $_REQUEST['tail_id'] . "' AND airbase='" . $_REQUEST['airbase'] . "'";
+    $sql = "SELECT * FROM stgchart WHERE aircraft='" . $_REQUEST['aircraft'] . "' AND tail_id='" . $_REQUEST['tail_id'] . "' AND airbase='" . $_REQUEST['airbase'] . "' ORDER BY flying_hours asc";
 }
 
 $result = $conn->query($sql);
