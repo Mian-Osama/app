@@ -37,14 +37,30 @@ include 'db_connect.php';
         exit;
     }
 
-    if(isset($_REQUEST['project_name']) && isset($_REQUEST['phase_name']) && isset($_REQUEST['task_name']) && isset($_REQUEST['duration']) && !isset($_REQUEST['status'])){
+    if (isset($_REQUEST['project_name']) && isset($_REQUEST['phase_name']) && isset($_REQUEST['task_name']) && isset($_REQUEST['duration']) && !isset($_REQUEST['status'])) {
         $where = "WHERE project_name = '{$_REQUEST['project_name']}' AND phase_name = '{$_REQUEST['phase_name']}' AND task_name = '{$_REQUEST['task_name']}'";
         $qry = "UPDATE project_tasks SET completed_duration = completed_duration + 1, details = '" . $_REQUEST['details'] . "' " . $where;
-        
-        // fetch data from database
+    
+        // Execute the update query
         $qry = $conn->query($qry);
+    
+        // Check if total duration is equal to total completed duration
+        $checkQry = "SELECT SUM(duration) AS total_duration, SUM(completed_duration) AS total_completed_duration FROM project_tasks " . $where;
+        $checkResult = $conn->query($checkQry);
+        $row = $checkResult->fetch_assoc();
+        $totalDuration = $row['total_duration'];
+        $totalCompletedDuration = $row['total_completed_duration'];
+    
+        if ($totalDuration == $totalCompletedDuration) {
+            // Set flydate to current date and update the database row
+            $flydate = date('Y-m-d'); // Current date
+            $updateQry = "UPDATE project_tasks SET flydate = '{$flydate}' " . $where;
+            $conn->query($updateQry);
+        }
+    
         exit;
     }
+    
 
     // fetch data from database
     $qry = $conn->query($qry);
