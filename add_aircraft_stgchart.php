@@ -262,6 +262,7 @@
                     <option value="<?php echo $projectName; ?>"><?php echo $projectName; ?></option>
                     <?php } ?>
                 </select>
+                <img src="legend.png" alt="Legend Image"  width="200" height="50">
             </div>
         </div>
     </form>
@@ -560,6 +561,7 @@ function exportToExcel2() {
           }
 
           const ctx = document.getElementById('lineChart').getContext('2d');
+          
           chart = new Chart(ctx, {
             type: 'line',
             data: {
