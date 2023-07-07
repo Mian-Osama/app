@@ -564,10 +564,11 @@ var maxHoursArray = <?php echo json_encode($max_hours_array); ?>;
                 tooltip: {
                   callbacks: {
                     label: function (context) {
-                      const dataIndex = context.dataIndex;
-                      const yValue = context.raw.y;
-                      const diff = yValue - slopeLine[dataIndex];
-                      return `Difference: ${diff}`;
+                        const dataIndex = context.dataIndex;
+                        const aircraftName = jsonData[dataIndex].aircraft;
+                        const xValue = jsonData[dataIndex].tail_id;
+                        const yValue = jsonData[dataIndex].flying_hours;
+                        return `Aircraft Name: ${aircraftName}\n Tail ID: ${xValue}\n Flying Hours: ${yValue}`;
                     }
                   }
                 }
