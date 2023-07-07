@@ -262,9 +262,9 @@
                     <option value="<?php echo $projectName; ?>"><?php echo $projectName; ?></option>
                     <?php } ?>
                 </select>
-                <img src="legend.png" alt="Legend Image"  width="200" height="50">
             </div>
         </div>
+        <img src="legend.png" alt="Legend Image"  width="200" height="50">
     </form>
     <style>
         canvas {
@@ -802,7 +802,7 @@ function exportToExcel2() {
       csvString = csvString.substring(0, csvString.length - 1);
       csvString += '\n';
     }
-    var filename = 'table_data.csv';
+    var filename = 'analysis_data.csv';
     var link = document.createElement('a');
     link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvString);
     link.target = '_blank';
@@ -824,7 +824,7 @@ function exportToExcel2() {
     var suggestionsTable = document.getElementById('list2');
     var rows = suggestionsTable.getElementsByTagName('tr');
     for (var i = 1; i < rows.length; i++) {
-      var suggestionCell = rows[i].getElementsByTagName('td')[5];
+      var suggestionCell = rows[i].getElementsByTagName('td')[6];
       if (suggestionCell.textContent.startsWith('Over Flying: ')) {
         rows[i].style.display = '';
       } else {
@@ -837,7 +837,7 @@ function exportToExcel2() {
     var suggestionsTable = document.getElementById('list2');
     var rows = suggestionsTable.getElementsByTagName('tr');
     for (var i = 1; i < rows.length; i++) {
-      var suggestionCell = rows[i].getElementsByTagName('td')[5];
+      var suggestionCell = rows[i].getElementsByTagName('td')[6];
       if (suggestionCell.textContent.startsWith('Under Flying: ')) {
         rows[i].style.display = '';
       } else {
