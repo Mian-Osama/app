@@ -640,14 +640,14 @@ function exportToExcel2() {
                         const remain = maxHoursVal-yValue;
                         let totalFly;
                         if (extHoursNew === null) {
-                        totalFly = yValue;
+                        totalFly = maxHoursVal;
                         } else if (maxHoursVal !== null) {
                             totalFly = Number(maxHoursVal) + Number(extHoursNew);
                         }
 
                         // Use the totalFly variable as needed
 
-                        return `Aircraft Name: ${aircraftName};  \n Mode: ${modValue}; \n Flying Hrs: ${yValue};  \n  Extension Hrs: ${extHoursNew}; \n  Total Fly Hrs:  ${totalFly};  \n  Remaining Fly Hrs: ${remain} `;
+                        return `Aircraft Name: ${aircraftName};  \n Mode: ${modValue}; \n Stagger Flying Hrs: ${yValue};  \n  Remaining Fly Hrs: ${remain}  \n  Extension Hrs: ${extHoursNew}; \n  Max Fly Hrs:  ${totalFly} `;
                     }
                   }
                 }
@@ -677,7 +677,7 @@ function exportToExcel2() {
   headerRow.insertCell().innerHTML = '<b>Details</b>';
   headerRow.insertCell().innerHTML = '<b>Extension Flying Hrs</b>';
   headerRow.insertCell().innerHTML = '<b>Stagger Flying Hrs</b>';
-  headerRow.insertCell().innerHTML = '<b>Total Flying Hrs</b>';
+  headerRow.insertCell().innerHTML = '<b>Max Fly Hrs</b>';
   headerRow.insertCell().innerHTML = '<b>Remaining Flying Hrs</b>';
   headerRow.insertCell().innerHTML = '<b>Current Status</b>';
   headerRow.insertCell().innerHTML = '<b>Hours (+/-)</b>';
@@ -696,7 +696,7 @@ function exportToExcel2() {
     const remFlyingHour = maximumHour - flyingHour;
     let totalFly;
     if (extHour === null) {
-    totalFly = flyingHour;
+    totalFly = maximumHour;
     } else if (extHour !== null) {
     totalFly = Number(maximumHour) + Number(extHour) ;
     }
