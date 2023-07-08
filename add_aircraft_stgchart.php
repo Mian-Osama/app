@@ -674,8 +674,8 @@ function exportToExcel2() {
   headerRow.insertCell().innerHTML = '<b>Aircraft Mod</b>';
   headerRow.insertCell().innerHTML = '<b>Details</b>';
   headerRow.insertCell().innerHTML = '<b>Extension Flying Hrs</b>';
-  headerRow.insertCell().innerHTML = '<b>Stagger Flying Hrs</b>';
   headerRow.insertCell().innerHTML = '<b>Max Fly Hrs</b>';
+  headerRow.insertCell().innerHTML = '<b>Stagger Flying Hrs</b>';
   headerRow.insertCell().innerHTML = '<b>Remaining Flying Hrs</b>';
   headerRow.insertCell().innerHTML = '<b>Current Status</b>';
   headerRow.insertCell().innerHTML = '<b>Hours (+/-)</b>';
@@ -745,8 +745,8 @@ function exportToExcel2() {
     newRow.insertCell().textContent = rowData.aircraftMods;
     newRow.insertCell().textContent = rowData.detail;
     newRow.insertCell().textContent = rowData.extHour;
-    newRow.insertCell().textContent = rowData.flyingHour;
     newRow.insertCell().textContent = rowData.totalFly;
+    newRow.insertCell().textContent = rowData.flyingHour;
     newRow.insertCell().textContent = rowData.remFlyingHour.toFixed(2);
 
     const suggestionCell = newRow.insertCell();
