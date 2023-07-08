@@ -306,7 +306,6 @@
                         <th class="text-center">Extension Flying Hours</th>
                         <th class="text-center">Aircraft Mod</th>
                         <th>Details</th>
-                        <th>Max Hours</th>
                         <th>Last Updated</th>
                         <th class="text-center">Actions</th> <!-- New column for delete button -->
                     </tr>
@@ -336,7 +335,6 @@
                             echo '<button class="btn btn-link details-toggle" data-toggle="collapse" data-target="#details-row-' . $row['id'] . '">Hide Details</button>';
                             echo '<div id="details-row-' . ($count + 1) . '" class="collapse show">' . $row['details'] . '</div>';
                             echo '</td>';
-                            echo '<td>' . $row['max_hours'] . '</td>';
                             echo '<td>' . $row['last_updated'] . '</td>';
                             echo '<td class="text-center">'; // New column for delete button
                             echo '<button class="btn btn-danger delete-btn" data-row="' . htmlspecialchars(json_encode($row)) . '">Delete</button>';
