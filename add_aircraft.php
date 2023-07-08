@@ -172,12 +172,15 @@
         // flying date entering;
         if(($status == 100)){
             $flyingdate = $row['flydate'];
-            $flyingtime = time();
-            $task_end_date = strtotime($last_end_date);
-            $delays1 = $flyingtime - $task_end_date;
-            $days_diff = $delays1 / (60 * 60 * 24);
-            $delays = (int)floor($days_diff);
-        }
+            $flyingdateObj = new DateTime($flyingdate);
+            $last_end_dateObj = new DateTime($last_end_date);
+
+            // Step 1: Calculate the difference
+            $interval = $last_end_dateObj->diff($flyingdateObj); // Note the order change
+
+            // Step 2: Convert the interval to days
+            $delays = $interval->format('%r%a'); // %r represents the sign (+ or -), %a represents the absolute total days
+            }
 
         // split project name by underscore to get aircraft name and tail id
         $name_parts = explode('_', $project_name);
