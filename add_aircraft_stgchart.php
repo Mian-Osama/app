@@ -862,7 +862,7 @@ function exportToExcel2() {
     var suggestionsTable = document.getElementById('list2');
     var rows = suggestionsTable.getElementsByTagName('tr');
     for (var i = 1; i < rows.length; i++) {
-      var suggestionCell = rows[i].getElementsByTagName('td')[6];
+      var suggestionCell = rows[i].getElementsByTagName('td')[8];
       if (suggestionCell.textContent.startsWith('Over Flying: ')) {
         rows[i].style.display = '';
       } else {
@@ -875,7 +875,7 @@ function exportToExcel2() {
     var suggestionsTable = document.getElementById('list2');
     var rows = suggestionsTable.getElementsByTagName('tr');
     for (var i = 1; i < rows.length; i++) {
-      var suggestionCell = rows[i].getElementsByTagName('td')[6];
+      var suggestionCell = rows[i].getElementsByTagName('td')[8];
       if (suggestionCell.textContent.startsWith('Under Flying: ')) {
         rows[i].style.display = '';
       } else {
